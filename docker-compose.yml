@@ -1,0 +1,12 @@
+version: '3.5'
+
+services:
+  go-docker-hello:
+    image: go-docker-hello:latest
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    environment:
+      - ENV_EXAMPLE=123compose123
+    command:
+      - ./go-docker-hello

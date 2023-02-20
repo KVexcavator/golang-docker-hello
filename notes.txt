@@ -1,0 +1,29 @@
+https://github.com/KenanBek/kn
+--
+FROM golang:latest as builder
+RUN mkdir /app
+WORKDIR /app
+COPY ../
+RUN make test
+ARG version=dev
+RUN CGO_ENABLED=0 GOOS=linux go build -mod=vendor -a -installsuffix cgo -ldflags "-X main.version=$version" -o kn-be-sd -v ./cmd/sd/main.go
+
+FROM alpine
+ENV KN_BE_SD_PORT=9080
+COPY --from=builder /app/kn-be-sd /
+---
+pwd
+Users/kenanbek/repositories/kenanbek/kn/be-sd
+docker build . -t kn-be-sd:latest
+docker run  kn-be-sd /kn-be-sd
+-- copy
+FROM golang:latest as builder
+RUN mkdir /app
+WORKDIR /app
+COPY . ./
+RUN make test
+ARG version=dev
+RUN CGO_ENABLED=0 GOOS=linux go build -mod=vendor -a -installsuffix cgo -ldflags "-X main.version=$version" -o kn-be-sd -v ./cmd/sd/main.go
+
+FROM alpine
+COPY --from=builder /app/kn-be-sd /
